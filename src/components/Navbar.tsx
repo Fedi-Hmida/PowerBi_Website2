@@ -1,8 +1,7 @@
-import { Menu, X, Moon, Sun } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import type { PageType } from '../types';
-import type { Theme } from '../lib/theme';
 import { useAuth } from '../contexts/AuthContext';
 import { LoginButton, UserProfile } from './auth';
 import { hasPageAccess } from '../config/auth';
@@ -10,8 +9,6 @@ import { hasPageAccess } from '../config/auth';
 interface NavbarProps {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
-  theme: Theme;
-  toggleTheme: () => void;
 }
 
 const navItems: { page: PageType; label: string }[] = [
@@ -26,7 +23,7 @@ const navItems: { page: PageType; label: string }[] = [
   { page: 'about', label: 'À propos' },
 ];
 
-export default function Navbar({ currentPage, onNavigate, theme, toggleTheme }: NavbarProps) {
+export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { scrollY } = useScroll();
@@ -144,26 +141,6 @@ export default function Navbar({ currentPage, onNavigate, theme, toggleTheme }: 
                 )}
               </motion.button>
             ))}
-            <motion.button
-              onClick={toggleTheme}
-              className="ml-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative overflow-hidden"
-              aria-label="Basculer le thème"
-              whileHover={{ scale: 1.1, rotate: 15 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <motion.div
-                key={theme}
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: "spring", bounce: 0.6, duration: 0.5 }}
-              >
-                {theme === 'light' ? (
-                  <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-                ) : (
-                  <Sun className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-                )}
-              </motion.div>
-            </motion.button>
 
             {/* Authentication UI */}
             <div className="ml-4">
@@ -176,17 +153,6 @@ export default function Navbar({ currentPage, onNavigate, theme, toggleTheme }: 
           </div>
 
           <div className="md:hidden flex items-center space-x-2">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Basculer le thème"
-            >
-              {theme === 'light' ? (
-                <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-              ) : (
-                <Sun className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-              )}
-            </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"

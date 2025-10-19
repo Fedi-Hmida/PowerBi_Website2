@@ -20,7 +20,7 @@ import type { PageType } from './types';
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [isLoading, setIsLoading] = useState(true);
-  const { theme, toggleTheme } = useTheme();
+  useTheme(); // Initialize dark mode
   const { isAuthenticated, user } = useAuth();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -185,8 +185,6 @@ function App() {
       <Navbar
         currentPage={currentPage}
         onNavigate={handleNavigate}
-        theme={theme}
-        toggleTheme={toggleTheme}
       />
       
       <AnimatePresence mode="wait">
