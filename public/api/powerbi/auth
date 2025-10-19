@@ -1,0 +1,7 @@
+{
+  "accessToken": "mock-access-token-for-development",
+  "embedUrl": "https://app.powerbi.com/reportEmbed?reportId=olympic-dashboard-report",
+  "expiresIn": 3600,
+  "tokenType": "Bearer"
+}
+
