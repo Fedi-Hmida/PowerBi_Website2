@@ -31,7 +31,7 @@ export enum UserRole {
 // Permission definitions for each role
 export const ROLE_PERMISSIONS = {
   [UserRole.ADMIN]: {
-    pages: ['home', 'dashboard', 'architecture', 'stakeholders', 'about', 'events', 'performance', 'results', 'media'],
+    pages: ['home', 'dashboard', 'stakeholders', 'about', 'athletes', 'teams', 'genre', 'coaches', 'results'],
     powerbi: {
       canView: true,
       canEdit: true,
@@ -43,7 +43,7 @@ export const ROLE_PERMISSIONS = {
     dataScope: 'all', // Access to all countries and sports
   },
   [UserRole.ANALYST]: {
-    pages: ['home', 'dashboard', 'architecture', 'about', 'events', 'performance', 'results'],
+    pages: ['home', 'dashboard', 'about', 'athletes', 'teams', 'genre', 'coaches', 'results'],
     powerbi: {
       canView: true,
       canEdit: true,

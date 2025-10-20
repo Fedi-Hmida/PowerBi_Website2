@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { 
   Database, GitBranch, LineChart, Globe, 
-  Shield, Zap, Cloud, Server, 
-  Lock, RefreshCw, BarChart3, Users,
-  Layers, Activity, CheckCircle
+  Shield, Zap,
+  Lock, RefreshCw, Users,
+  Activity
 } from 'lucide-react';
 
 const dataFlow = [
@@ -11,33 +11,6 @@ const dataFlow = [
   { icon: <GitBranch className="w-8 h-8" />, label: 'Pipeline ETL', description: 'Transformation des données' },
   { icon: <LineChart className="w-8 h-8" />, label: 'Moteur Analytics', description: 'Traitement et analyse' },
   { icon: <Globe className="w-8 h-8" />, label: 'Interface Web', description: 'Application utilisateur' },
-];
-
-const techStack = [
-  {
-    category: 'Frontend',
-    icon: <Globe className="w-6 h-6" />,
-    technologies: ['React 18', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    color: 'from-blue-500 to-cyan-500'
-  },
-  {
-    category: 'Backend',
-    icon: <Server className="w-6 h-6" />,
-    technologies: ['Node.js', 'Express', 'SQL Database', 'REST APIs'],
-    color: 'from-purple-500 to-pink-500'
-  },
-  {
-    category: 'Analytics',
-    icon: <BarChart3 className="w-6 h-6" />,
-    technologies: ['Data Processing', 'Visualization', 'Query Engine', 'Modeling'],
-    color: 'from-orange-500 to-red-500'
-  },
-  {
-    category: 'Infrastructure',
-    icon: <Cloud className="w-6 h-6" />,
-    technologies: ['Cloud Platform', 'CI/CD', 'Containerization', 'Monitoring'],
-    color: 'from-green-500 to-teal-500'
-  }
 ];
 
 const features = [
@@ -76,33 +49,6 @@ const features = [
     title: 'Conformité',
     description: 'Respect des normes RGPD, ISO 27001, et meilleures pratiques de sécurité des données',
     highlight: 'Compliant'
-  }
-];
-
-const dataLayers = [
-  {
-    layer: 'Couche Présentation',
-    icon: <Globe className="w-5 h-5" />,
-    components: ['Interface Web', 'Design Responsive', 'Visualisations Interactives'],
-    color: 'bg-blue-500'
-  },
-  {
-    layer: 'Couche Application',
-    icon: <Layers className="w-5 h-5" />,
-    components: ['Business Logic', 'API Gateway', 'Authentification'],
-    color: 'bg-purple-500'
-  },
-  {
-    layer: 'Couche Analytics',
-    icon: <BarChart3 className="w-5 h-5" />,
-    components: ['Moteur Analytics', 'Query Engine', 'Data Models'],
-    color: 'bg-orange-500'
-  },
-  {
-    layer: 'Couche Données',
-    icon: <Database className="w-5 h-5" />,
-    components: ['Data Warehouse', 'ETL Pipelines', 'Sources Externes'],
-    color: 'bg-green-500'
   }
 ];
 
@@ -164,42 +110,6 @@ export default function Architecture() {
           </div>
         </motion.div>
 
-        {/* Tech Stack Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mb-16"
-        >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Stack Technologique</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {techStack.map((stack, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 + 0.1 * index }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stack.color} flex items-center justify-center text-white mb-4`}>
-                  {stack.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  {stack.category}
-                </h3>
-                <ul className="space-y-2">
-                  {stack.technologies.map((tech, i) => (
-                    <li key={i} className="flex items-center text-gray-600 dark:text-gray-400">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      <span className="text-sm">{tech}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
         {/* Features Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -235,55 +145,6 @@ export default function Architecture() {
                     </p>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Data Layers Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-          className="mb-16"
-        >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Architecture en Couches</h2>
-          <div className="max-w-4xl mx-auto space-y-4">
-            {dataLayers.map((layer, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.7 + 0.1 * index }}
-                className="relative"
-              >
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-16 h-16 rounded-xl ${layer.color} flex items-center justify-center text-white shadow-lg`}>
-                      {layer.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                        {layer.layer}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {layer.components.map((component, i) => (
-                          <span
-                            key={i}
-                            className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-300"
-                          >
-                            {component}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {index < dataLayers.length - 1 && (
-                  <div className="flex justify-center py-2">
-                    <div className="w-0.5 h-8 bg-gradient-to-b from-gray-300 dark:from-gray-600 to-transparent" />
-                  </div>
-                )}
               </motion.div>
             ))}
           </div>

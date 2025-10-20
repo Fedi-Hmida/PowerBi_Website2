@@ -36,30 +36,6 @@ const recentResults = [
   }
 ];
 
-const liveEvents = [
-  {
-    sport: 'Tennis',
-    event: 'Finale Simple Hommes',
-    status: 'En cours',
-    score: 'Djokovic 6-4, 2-1 Medvedev',
-    court: 'Court Central'
-  },
-  {
-    sport: 'Basketball',
-    event: 'Finale Hommes',
-    status: 'En cours',
-    score: 'USA 87-82 France',
-    court: 'Salle Bercy'
-  },
-  {
-    sport: 'Volleyball',
-    event: 'Finale Femmes',
-    status: 'Programmé',
-    score: 'Brésil vs Serbie',
-    court: 'Arena Sud'
-  }
-];
-
 export default function Results() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-green-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors pt-20 pb-12">
@@ -78,41 +54,6 @@ export default function Results() {
           <p className="text-gray-600 dark:text-gray-300 text-xl max-w-3xl mx-auto">
             Classements des médailles, résultats en direct et performances
           </p>
-        </motion.div>
-
-        {/* Live Events */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Événements en Direct</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {liveEvents.map((event, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.1 + 0.1 * index }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{event.sport}</h3>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    event.status === 'En cours' 
-                      ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 animate-pulse'
-                      : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                  }`}>
-                    {event.status}
-                  </span>
-                </div>
-                <p className="text-gray-600 dark:text-gray-400 mb-3">{event.event}</p>
-                <p className="text-xl font-bold text-[#0085C3] mb-2">{event.score}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-500">{event.court}</p>
-              </motion.div>
-            ))}
-          </div>
         </motion.div>
 
         {/* Medal Standings */}

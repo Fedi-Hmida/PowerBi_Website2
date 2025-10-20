@@ -40,9 +40,9 @@ const stakeholders: Stakeholder[] = [
       'Suivi des performances nationales'
     ],
     metrics: [
-      { label: 'Pays représentés', value: '206' },
-      { label: 'Athlètes', value: '10,500' },
-      { label: 'Sports', value: '32' }
+      { label: 'Pays représentés', value: '93' },
+      { label: 'Athlètes', value: '11,084' },
+      { label: 'Équipes', value: '743' }
     ]
   },
   {
@@ -57,9 +57,9 @@ const stakeholders: Stakeholder[] = [
       'Développement des sports'
     ],
     metrics: [
-      { label: 'Fédérations', value: '28' },
-      { label: 'Disciplines', value: '48' },
-      { label: 'Officiels', value: '2,000+' }
+      { label: 'Disciplines', value: '46' },
+      { label: 'Entraîneurs', value: '743' },
+      { label: 'Ratio A/E', value: '14.92' }
     ]
   },
   {
@@ -74,9 +74,9 @@ const stakeholders: Stakeholder[] = [
       'Promotion du sport'
     ],
     metrics: [
-      { label: 'Participants', value: '10,500' },
-      { label: 'Médaillés', value: '987' },
-      { label: 'Records', value: '47' }
+      { label: 'Participants', value: '11,084' },
+      { label: 'Hommes', value: '52%' },
+      { label: 'Femmes', value: '48%' }
     ]
   },
   {
@@ -215,12 +215,12 @@ export default function Stakeholders() {
               <div className="text-gray-600 dark:text-gray-300 text-sm font-medium">Groupes de Parties Prenantes</div>
             </div>
             <div className="text-center p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl">
-              <div className="text-3xl font-bold text-[#FFD100] mb-2">206</div>
+              <div className="text-3xl font-bold text-[#FFD100] mb-2">93</div>
               <div className="text-gray-600 dark:text-gray-300 text-sm font-medium">Pays Participants</div>
             </div>
             <div className="text-center p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl">
-              <div className="text-3xl font-bold text-[#009F3D] mb-2">3B+</div>
-              <div className="text-gray-600 dark:text-gray-300 text-sm font-medium">Audience Mondiale</div>
+              <div className="text-3xl font-bold text-[#009F3D] mb-2">11,084</div>
+              <div className="text-gray-600 dark:text-gray-300 text-sm font-medium">Athlètes Olympiques</div>
             </div>
           </div>
         </motion.div>

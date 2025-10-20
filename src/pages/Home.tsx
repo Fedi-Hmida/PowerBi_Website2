@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
 import { Award, TrendingUp, Users, Globe, ArrowRight, Sparkles, Zap, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import KPICard from '../components/KPICard';
+import PowerBIDataService from '../services/powerBIDataService';
+import ExportPDFButton from '../components/ExportPDFButton';
 import type { PageType } from '../types';
 
 interface HomeProps {
@@ -8,6 +11,32 @@ interface HomeProps {
 }
 
 export default function Home({ onNavigate }: HomeProps) {
+  const [kpis, setKpis] = useState({
+    totalAthletes: 11084,
+    totalCountries: 93,
+    totalDisciplines: 46,
+    totalTeams: 743,
+    totalCoaches: 743,
+    genderRatio: 0.92
+  });
+
+  useEffect(() => {
+    const loadKPIs = async () => {
+      const dataService = PowerBIDataService.getInstance();
+      const data = await dataService.refreshData();
+      if (data.kpis) {
+        setKpis({
+          totalAthletes: data.kpis.totalAthletes || 11084,
+          totalCountries: data.kpis.totalCountries || 93,
+          totalDisciplines: data.kpis.totalDisciplines || 46,
+          totalTeams: data.kpis.totalTeams || 743,
+          totalCoaches: 743,
+          genderRatio: 0.92
+        });
+      }
+    };
+    loadKPIs();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-green-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors relative overflow-hidden">
@@ -204,9 +233,10 @@ export default function Home({ onNavigate }: HomeProps) {
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 1 }}
             >
-              Plateforme d'analytics de niveau entreprise avec intégration Power BI et visualisations interactives 
-              fournissant des insights en temps réel pour la prise de décision stratégique, l'optimisation des performances, 
-              et le suivi des médailles à travers toutes les disciplines olympiques.
+              Plateforme d'analyse olympique avec intégration Power BI pour suivre {kpis.totalAthletes.toLocaleString()} athlètes 
+              de {kpis.totalCountries} pays participant dans {kpis.totalDisciplines} disciplines. 
+              Visualisations en temps réel pour l'analyse des performances, la distribution par genre, 
+              et les statistiques d'équipes avec {kpis.totalCoaches} entraîneurs.
             </motion.span>
             <motion.div
               className="absolute top-0 -left-8"
@@ -270,10 +300,10 @@ export default function Home({ onNavigate }: HomeProps) {
             }}
           >
             <KPICard
-              title="Total Médailles"
-              value="1,245"
-              icon={<Award className="w-6 h-6" />}
-              trend="+12%"
+              title="Athlètes"
+              value={kpis.totalAthletes.toLocaleString()}
+              icon={<Users className="w-6 h-6" />}
+              trend="11,084 Total"
               delay={0.1}
             />
           </motion.div>
@@ -296,10 +326,10 @@ export default function Home({ onNavigate }: HomeProps) {
             }}
           >
             <KPICard
-              title="Indice de Performance"
-              value="92%"
-              icon={<TrendingUp className="w-6 h-6" />}
-              trend="+8%"
+              title="Pays"
+              value={kpis.totalCountries.toString()}
+              icon={<Globe className="w-6 h-6" />}
+              trend="93 Nations"
               delay={0.2}
             />
           </motion.div>
@@ -322,10 +352,10 @@ export default function Home({ onNavigate }: HomeProps) {
             }}
           >
             <KPICard
-              title="Équilibre des Genres"
-              value="47/53"
-              icon={<Users className="w-6 h-6" />}
-              trend="+3%"
+              title="Disciplines"
+              value={kpis.totalDisciplines.toString()}
+              icon={<Award className="w-6 h-6" />}
+              trend="46 Sports"
               delay={0.3}
             />
           </motion.div>
@@ -348,9 +378,10 @@ export default function Home({ onNavigate }: HomeProps) {
             }}
           >
             <KPICard
-              title="Pays"
-              value="206"
-              icon={<Globe className="w-6 h-6" />}
+              title="Équipes"
+              value={kpis.totalTeams.toString()}
+              icon={<TrendingUp className="w-6 h-6" />}
+              trend="743 Teams"
               delay={0.4}
             />
           </motion.div>
@@ -395,7 +426,7 @@ export default function Home({ onNavigate }: HomeProps) {
           </motion.button>
           
           <motion.button
-            onClick={() => onNavigate('architecture')}
+            onClick={() => onNavigate('athletes')}
             className="px-8 py-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl text-gray-900 dark:text-white rounded-xl font-semibold text-lg shadow-2xl border border-white/20 dark:border-gray-700/50 relative overflow-hidden group"
             whileHover={{ 
               scale: 1.05,
@@ -410,8 +441,30 @@ export default function Home({ onNavigate }: HomeProps) {
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-[#0085C3]/10 to-[#009F3D]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
             />
-            <span className="relative z-10">Explorer l'Architecture</span>
+            <span className="relative z-10">Explorer les Athlètes</span>
           </motion.button>
+
+          {/* Export PDF Button */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 1.4 }}
+          >
+            <ExportPDFButton
+              stats={{
+                totalAthletes: kpis.totalAthletes,
+                totalCountries: kpis.totalCountries,
+                totalDisciplines: kpis.totalDisciplines,
+                totalTeams: kpis.totalTeams,
+                totalCoaches: kpis.totalCoaches,
+                athleteCoachRatio: kpis.totalAthletes / kpis.totalCoaches,
+                genderDistribution: {
+                  male: 52,
+                  female: 48
+                }
+              }}
+            />
+          </motion.div>
         </motion.div>
 
         <motion.div

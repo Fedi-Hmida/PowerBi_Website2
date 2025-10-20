@@ -1,4 +1,4 @@
-export type PageType = 'home' | 'login' | 'dashboard' | 'architecture' | 'stakeholders' | 'about' | 'events' | 'performance' | 'results' | 'media';
+export type PageType = 'home' | 'login' | 'dashboard' | 'stakeholders' | 'about' | 'athletes' | 'results' | 'teams' | 'genre' | 'coaches';
 
 export interface KPICardProps {
   title: string;

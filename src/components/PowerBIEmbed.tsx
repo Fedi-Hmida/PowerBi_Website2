@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertCircle, RefreshCw, Maximize2, Download } from 'lucide-react';
-import PowerBIService, { PowerBIConfig } from '../services/powerbi';
+import { AlertCircle, RefreshCw, Maximize2 } from 'lucide-react';
 import LoadingOverlay from './LoadingOverlay';
 
 interface PowerBIEmbedProps {
@@ -18,9 +17,7 @@ export default function PowerBIEmbed({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [embedConfig, setEmbedConfig] = useState<PowerBIConfig | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const powerBIService = PowerBIService.getInstance();
 
   useEffect(() => {
     const initializeEmbed = async () => {
@@ -28,11 +25,7 @@ export default function PowerBIEmbed({
         setIsLoading(true);
         setError(null);
 
-        const config = await powerBIService.getEmbedConfig(reportId);
-        setEmbedConfig(config);
-
-        // In a real implementation, you would embed the Power BI report here
-        // For now, we'll simulate the loading process
+        // Simulate loading process
         setTimeout(() => {
           setIsLoading(false);
         }, 2000);
@@ -65,11 +58,6 @@ export default function PowerBIEmbed({
         setIsFullscreen(false);
       }
     }
-  };
-
-  const handleExport = () => {
-    // Implement export functionality
-    console.log('Export functionality would be implemented here');
   };
 
   if (error) {
@@ -110,13 +98,6 @@ export default function PowerBIEmbed({
           <Maximize2 className="w-4 h-4" />
           <span>{isFullscreen ? 'Quitter le Plein Écran' : 'Plein Écran'}</span>
         </button>
-        <button
-          onClick={handleExport}
-          className="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          <span>Exporter</span>
-        </button>
       </div>
 
       {/* Power BI Container */}
@@ -136,47 +117,15 @@ export default function PowerBIEmbed({
         />
 
         {!isLoading && (
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center p-8">
-              <div className="bg-gradient-to-r from-[#0085C3]/10 via-[#FFD100]/10 to-[#009F3D]/10 p-8 rounded-xl">
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border-2 border-dashed border-gray-300 dark:border-gray-600">
-                  <AlertCircle className="w-16 h-16 text-[#0085C3] mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                    Intégration du Rapport Power BI
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-                    C'est ici que votre rapport Power BI serait intégré. Pour activer l'intégration réelle :
-                  </p>
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 text-left max-w-3xl mx-auto mb-6">
-                    <pre className="text-sm text-gray-700 dark:text-gray-300 overflow-x-auto">
-{`1. Configurer l'authentification Power BI Service
-2. Configurer votre ID de rapport : ${reportId}
-3. Mettre à jour le PowerBIService avec les vraies informations d'identification
-4. Le rapport sera intégré ici automatiquement`}
-                    </pre>
-                  </div>
-                  <div className="flex flex-wrap gap-3 justify-center">
-                    <a
-                      href="https://docs.microsoft.com/power-bi/developer/embedded/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-6 py-3 bg-[#0085C3] text-white rounded-lg hover:bg-[#0085C3]/90 transition-colors font-medium"
-                    >
-                      Documentation Power BI Embed
-                    </a>
-                    <a
-                      href="https://app.powerbi.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-6 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium"
-                    >
-                      Portail Power BI
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <iframe 
+            title="projetBI18_10" 
+            width="1140" 
+            height="541.25" 
+            src="https://app.powerbi.com/reportEmbed?reportId=b8b90654-9d77-4a72-8be6-6d1da347696e&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730" 
+            frameBorder="0" 
+            allowFullScreen={true}
+            style={{ border: 0, width: '100%', minHeight: '541.25px' }}
+          />
         )}
       </motion.div>
     </div>

@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Award, Target, Zap, Users, Calendar } from 'lucide-react';
+import { TrendingUp, Award, Target, Zap, Users, Calendar, RefreshCw } from 'lucide-react';
+import PowerBIDataService from '../services/powerBIDataService';
 
 const performanceMetrics = [
   {
@@ -73,6 +75,64 @@ const sportCategories = [
 ];
 
 export default function Performance() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [performanceData, setPerformanceData] = useState(performanceMetrics);
+  const [topAthletesData, setTopAthletesData] = useState(topPerformers);
+  const [sportsData, setSportsData] = useState(sportCategories);
+
+  useEffect(() => {
+    loadPerformanceData();
+    
+    // Auto-refresh every 30 seconds
+    const powerBIService = PowerBIDataService.getInstance();
+    powerBIService.startAutoUpdate(30000);
+    
+    const interval = setInterval(() => {
+      loadPerformanceData();
+    }, 30000);
+
+    return () => {
+      clearInterval(interval);
+      powerBIService.stopAutoUpdate();
+    };
+  }, []);
+
+  const loadPerformanceData = async () => {
+    setIsLoading(true);
+    try {
+      const powerBIService = PowerBIDataService.getInstance();
+      const data = await powerBIService.refreshData();
+
+      if (data && data.performance) {
+        // Update top performers from Power BI performance data
+        const updatedPerformers = data.performance.slice(0, 3).map((item, index) => ({
+          rank: index + 1,
+          athlete: `Top Athlete ${index + 1}`,
+          country: item.country,
+          sport: 'Multi-Sport',
+          event: 'Overall Performance',
+          performance: `${item.efficiency.toFixed(1)}%`,
+          type: item.efficiency > 85 ? 'Record Olympique' : 'Performance Excellente',
+          medals: item.medals
+        }));
+        
+        setTopAthletesData(updatedPerformers.length > 0 ? updatedPerformers : topPerformers);
+      }
+
+      // Keep existing metrics as they're display-focused
+      setPerformanceData(performanceMetrics);
+      setSportsData(sportCategories);
+    } catch (error) {
+      console.error('Error loading performance data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    loadPerformanceData();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-green-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,12 +144,26 @@ export default function Performance() {
           transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#0085C3] via-[#FFD100] to-[#009F3D] bg-clip-text text-transparent mb-6">
-            Performance Olympique
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 text-xl max-w-3xl mx-auto">
-            Analyse des performances, records et statistiques des athlètes
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#0085C3] via-[#FFD100] to-[#009F3D] bg-clip-text text-transparent mb-6">
+                Performance Olympique
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300 text-xl max-w-3xl mx-auto">
+                Analyse des performances, records et statistiques des athlètes
+              </p>
+            </div>
+            <motion.button
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className="flex items-center gap-2 px-4 py-2 bg-[#0085C3] text-white rounded-lg hover:bg-[#006fa3] transition-colors disabled:opacity-50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+              Actualiser
+            </motion.button>
+          </div>
         </motion.div>
 
         {/* Performance Metrics */}
@@ -101,7 +175,7 @@ export default function Performance() {
         >
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Métriques de Performance</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {performanceMetrics.map((metric, index) => (
+            {performanceData.map((metric, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -157,7 +231,7 @@ export default function Performance() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {topPerformers.map((performer, index) => (
+                  {topAthletesData.map((performer, index) => (
                     <motion.tr
                       key={index}
                       initial={{ opacity: 0, x: -20 }}
@@ -223,7 +297,7 @@ export default function Performance() {
         >
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Performance par Sport</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {sportCategories.map((category, index) => (
+            {sportsData.map((category, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}

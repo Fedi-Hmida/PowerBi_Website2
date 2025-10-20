@@ -1,17 +1,19 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import { BarChart3, PieChart, Users, TrendingUp, Sparkles, Zap, Star } from 'lucide-react';
+import { BarChart3, PieChart, Users, TrendingUp, Sparkles, Zap, Star, RefreshCw } from 'lucide-react';
 import PowerBIEmbed from '../components/PowerBIEmbed';
 import MedalDistributionChart from '../components/charts/MedalDistributionChart';
 import ParticipationChart from '../components/charts/ParticipationChart';
 import GenderParityChart from '../components/charts/GenderParityChart';
-import PerformanceScatterChart from '../components/charts/PerformanceScatterChart';
-import PowerBIService from '../services/powerbi';
+import PowerBIDataService, { OlympicData } from '../services/powerBIDataService';
+import ExportPDFButton from '../components/ExportPDFButton';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'powerbi' | 'charts'>('powerbi');
-  const [olympicData, setOlympicData] = useState<any>(null);
-  const powerBIService = PowerBIService.getInstance();
+  const [olympicData, setOlympicData] = useState<OlympicData | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const dataService = PowerBIDataService.getInstance();
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   const { scrollYProgress } = useScroll();
@@ -19,10 +21,29 @@ export default function Dashboard() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
 
   useEffect(() => {
-    // Load Olympic data
-    const data = powerBIService.getMockOlympicData();
-    setOlympicData(data);
+    // Load Olympic data dynamically
+    loadData();
+
+    // Démarrer les mises à jour automatiques toutes les 30 secondes
+    dataService.startAutoUpdate(30000);
+
+    // Cleanup: Arrêter les mises à jour quand le composant est démonté
+    return () => {
+      dataService.stopAutoUpdate();
+    };
   }, []);
+
+  const loadData = async () => {
+    const data = await dataService.refreshData();
+    setOlympicData(data);
+    setLastUpdate(new Date());
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await loadData();
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-green-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-all duration-1000 pt-20 pb-12 relative overflow-hidden">
@@ -69,22 +90,81 @@ export default function Dashboard() {
           transition={{ duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
           className="mb-12 text-center"
         >
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-full border border-white/20 dark:border-gray-700/50 mb-6"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
             <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-full border border-white/20 dark:border-gray-700/50"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <Sparkles className="w-4 h-4 text-[#FFD100]" />
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Sparkles className="w-4 h-4 text-[#FFD100]" />
+              </motion.div>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Analytics en Temps Réel
+              </span>
             </motion.div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Analytics en Temps Réel
-            </span>
-          </motion.div>
+
+            <motion.button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#0085C3] to-[#009F3D] text-white rounded-full hover:shadow-lg transition-all disabled:opacity-50"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <motion.div
+                animate={isRefreshing ? { rotate: 360 } : {}}
+                transition={{ duration: 1, repeat: isRefreshing ? Infinity : 0, ease: "linear" }}
+              >
+                <RefreshCw className="w-4 h-4" />
+              </motion.div>
+              <span className="text-sm font-medium">
+                {isRefreshing ? 'Actualisation...' : 'Actualiser les données'}
+              </span>
+            </motion.button>
+
+            {/* Export PDF Button */}
+            {olympicData && olympicData.kpis && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+              >
+                <ExportPDFButton
+                  stats={{
+                    totalAthletes: olympicData.kpis.totalAthletes || 11084,
+                    totalCountries: olympicData.kpis.totalCountries || 93,
+                    totalDisciplines: olympicData.kpis.totalDisciplines || 46,
+                    totalTeams: olympicData.kpis.totalTeams || 743,
+                    totalCoaches: 743,
+                    athleteCoachRatio: 14.92,
+                    genderDistribution: {
+                      male: 52,
+                      female: 48
+                    }
+                  }}
+                  variant="icon"
+                />
+              </motion.div>
+            )}
+
+            <motion.div
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-full border border-white/20 dark:border-gray-700/50"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <span className="text-xs text-gray-600 dark:text-gray-400">
+                Dernière mise à jour: {lastUpdate.toLocaleTimeString('fr-FR')}
+              </span>
+            </motion.div>
+          </div>
 
           <motion.h1 
             className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 relative"
@@ -253,27 +333,11 @@ export default function Dashboard() {
               </motion.div>
             </motion.div>
 
-            {/* Performance Analysis */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.6, delay: 2.2 }}
-              className="relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#009F3D]/10 to-[#0085C3]/10 rounded-3xl blur-2xl" />
-              <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50">
-                <PerformanceScatterChart 
-                  data={olympicData.performance.slice(0, 10)} 
-                  title="Analyse de l'Efficacité de Performance"
-                />
-              </div>
-            </motion.div>
-
             {/* Enhanced Summary Cards */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.8, delay: 2.4 }}
+              transition={{ duration: 0.8, delay: 2.2 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-8"
             >
               {[

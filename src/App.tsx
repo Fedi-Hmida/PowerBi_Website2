@@ -4,14 +4,14 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import Architecture from './pages/Architecture';
 import Stakeholders from './pages/Stakeholders';
 import About from './pages/About';
 import Login from './pages/Login';
-import Events from './pages/Events';
-import Performance from './pages/Performance';
+import Athletes from './pages/Athletes';
+import Teams from './pages/Teams';
+import Genre from './pages/Genre';
+import Coaches from './pages/Coaches';
 import Results from './pages/Results';
-import Media from './pages/Media';
 import { useTheme } from './lib/theme';
 import { ProtectedRoute } from './components/auth';
 import { useAuth } from './contexts/AuthContext';
@@ -54,34 +54,34 @@ function App() {
             <Dashboard />
           </ProtectedRoute>
         );
-      case 'events':
+      case 'athletes':
         return (
-          <ProtectedRoute requirePage="events">
-            <Events />
+          <ProtectedRoute requirePage="athletes">
+            <Athletes />
           </ProtectedRoute>
         );
-      case 'performance':
+      case 'teams':
         return (
-          <ProtectedRoute requirePage="performance">
-            <Performance />
+          <ProtectedRoute requirePage="teams">
+            <Teams />
+          </ProtectedRoute>
+        );
+      case 'genre':
+        return (
+          <ProtectedRoute requirePage="genre">
+            <Genre />
+          </ProtectedRoute>
+        );
+      case 'coaches':
+        return (
+          <ProtectedRoute requirePage="coaches">
+            <Coaches />
           </ProtectedRoute>
         );
       case 'results':
         return (
           <ProtectedRoute requirePage="results">
             <Results />
-          </ProtectedRoute>
-        );
-      case 'media':
-        return (
-          <ProtectedRoute requirePage="media">
-            <Media />
-          </ProtectedRoute>
-        );
-      case 'architecture':
-        return (
-          <ProtectedRoute requirePage="architecture">
-            <Architecture />
           </ProtectedRoute>
         );
       case 'stakeholders':

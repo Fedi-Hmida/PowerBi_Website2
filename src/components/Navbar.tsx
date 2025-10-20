@@ -14,11 +14,11 @@ interface NavbarProps {
 const navItems: { page: PageType; label: string }[] = [
   { page: 'home', label: 'Accueil' },
   { page: 'dashboard', label: 'Tableau de bord' },
-  { page: 'events', label: 'Événements' },
-  { page: 'performance', label: 'Performance' },
+  { page: 'athletes', label: 'Athlètes' },
+  { page: 'teams', label: 'Équipes' },
+  { page: 'genre', label: 'Genre' },
+  { page: 'coaches', label: 'Entraîneurs' },
   { page: 'results', label: 'Résultats' },
-  { page: 'media', label: 'Médias' },
-  { page: 'architecture', label: 'Architecture' },
   { page: 'stakeholders', label: 'Parties prenantes' },
   { page: 'about', label: 'À propos' },
 ];
