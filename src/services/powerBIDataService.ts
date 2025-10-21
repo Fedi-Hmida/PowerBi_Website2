@@ -33,11 +33,18 @@ export interface PerformanceData {
   medals: number;
 }
 
+export interface CountryAthleteData {
+  country: string;
+  athletes: number;
+  flag?: string;
+}
+
 export interface OlympicData {
   medals: MedalData[];
   participation: ParticipationData[];
   genderParity: GenderParityData[];
   performance: PerformanceData[];
+  topCountries?: CountryAthleteData[];
   kpis?: {
     totalMedals: number;
     performanceIndex: number;
@@ -347,6 +354,19 @@ class PowerBIDataService {
         { country: 'France', efficiency: 0.79, athletes: 378, medals: 33 },
         { country: 'Germany', efficiency: 0.81, athletes: 434, medals: 37 },
         { country: 'Italy', efficiency: 0.80, athletes: 384, medals: 40 },
+      ],
+      topCountries: [
+        // Données basées sur le nombre d'athlètes par pays
+        { country: 'United States', athletes: 613 },
+        { country: 'Japan', athletes: 552 },
+        { country: 'Australia', athletes: 472 },
+        { country: 'Germany', athletes: 434 },
+        { country: 'China', athletes: 431 },
+        { country: 'Italy', athletes: 384 },
+        { country: 'France', athletes: 378 },
+        { country: 'Great Britain', athletes: 376 },
+        { country: 'ROC', athletes: 335 },
+        { country: 'Netherlands', athletes: 288 },
       ],
       kpis: {
         totalMedals: 1245,  // À vérifier dans votre Power BI

@@ -41,6 +41,25 @@ export default function PowerBIEmbed({
     initializeEmbed();
   }, [reportId, onError]);
 
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
+
   const handleRefresh = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -48,15 +67,35 @@ export default function PowerBIEmbed({
     }, 1000);
   };
 
-  const handleFullscreen = () => {
-    if (containerRef.current) {
+  const handleFullscreen = async () => {
+    if (!containerRef.current) return;
+
+    try {
       if (!document.fullscreenElement) {
-        containerRef.current.requestFullscreen();
-        setIsFullscreen(true);
+        // Enter fullscreen
+        if (containerRef.current.requestFullscreen) {
+          await containerRef.current.requestFullscreen();
+        } else if ((containerRef.current as any).webkitRequestFullscreen) {
+          await (containerRef.current as any).webkitRequestFullscreen();
+        } else if ((containerRef.current as any).mozRequestFullScreen) {
+          await (containerRef.current as any).mozRequestFullScreen();
+        } else if ((containerRef.current as any).msRequestFullscreen) {
+          await (containerRef.current as any).msRequestFullscreen();
+        }
       } else {
-        document.exitFullscreen();
-        setIsFullscreen(false);
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        } else if ((document as any).mozCancelFullScreen) {
+          await (document as any).mozCancelFullScreen();
+        } else if ((document as any).msExitFullscreen) {
+          await (document as any).msExitFullscreen();
+        }
       }
+    } catch (err) {
+      console.error('Erreur lors du passage en plein écran:', err);
     }
   };
 
@@ -106,8 +145,13 @@ export default function PowerBIEmbed({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
-        style={{ height: `${height}px` }}
+        className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden ${
+          isFullscreen ? 'fullscreen-container' : ''
+        }`}
+        style={{ 
+          height: isFullscreen ? '100vh' : `${height}px`,
+          width: isFullscreen ? '100vw' : '100%'
+        }}
       >
         <LoadingOverlay 
           isVisible={isLoading}
@@ -124,10 +168,47 @@ export default function PowerBIEmbed({
             src="https://app.powerbi.com/reportEmbed?reportId=0adf0086-c7fd-4dcb-b2b7-eeafa31ad5ae&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730" 
             frameBorder="0" 
             allowFullScreen={true}
-            style={{ border: 0, width: '100%', minHeight: '541.25px' }}
+            style={{ 
+              border: 0, 
+              width: '100%', 
+              height: isFullscreen ? '100vh' : '541.25px',
+              minHeight: isFullscreen ? '100vh' : '541.25px'
+            }}
           />
         )}
       </motion.div>
+      
+      {/* Fullscreen CSS */}
+      <style>{`
+        .fullscreen-container:fullscreen {
+          width: 100vw !important;
+          height: 100vh !important;
+          background: white;
+        }
+        
+        .fullscreen-container:-webkit-full-screen {
+          width: 100vw !important;
+          height: 100vh !important;
+          background: white;
+        }
+        
+        .fullscreen-container:-moz-full-screen {
+          width: 100vw !important;
+          height: 100vh !important;
+          background: white;
+        }
+        
+        .fullscreen-container:-ms-fullscreen {
+          width: 100vw !important;
+          height: 100vh !important;
+          background: white;
+        }
+        
+        .fullscreen-container:fullscreen iframe {
+          width: 100% !important;
+          height: 100vh !important;
+        }
+      `}</style>
     </div>
   );
 }

@@ -4,16 +4,16 @@ import { BarChart3, PieChart, Users, TrendingUp, Sparkles, Zap, Star, RefreshCw 
 import PowerBIEmbed from '../components/PowerBIEmbed';
 import MedalDistributionChart from '../components/charts/MedalDistributionChart';
 import ParticipationChart from '../components/charts/ParticipationChart';
-import GenderParityChart from '../components/charts/GenderParityChart';
+import TopCountriesChart from '../components/charts/TopCountriesChart';
 import PowerBIDataService, { OlympicData } from '../services/powerBIDataService';
 import ExportPDFButton from '../components/ExportPDFButton';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'powerbi' | 'charts'>('powerbi');
-  const [olympicData, setOlympicData] = useState<OlympicData | null>(null);
+  const dataService = PowerBIDataService.getInstance();
+  const [olympicData, setOlympicData] = useState<OlympicData>(dataService.getMockData());
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
-  const dataService = PowerBIDataService.getInstance();
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   const { scrollYProgress } = useScroll();
@@ -289,7 +289,7 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-gradient-to-r from-[#0085C3]/10 to-[#009F3D]/10 rounded-3xl blur-2xl" />
               <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50">
                 <MedalDistributionChart 
-                  data={olympicData.medals.slice(0, 10)} 
+                  data={olympicData?.medals?.slice(0, 10) || []} 
                   title="Top 10 Pays - Distribution des Médailles"
                 />
               </div>
@@ -311,7 +311,7 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#0085C3]/10 to-[#FFD100]/10 rounded-3xl blur-2xl" />
                 <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50">
                   <ParticipationChart 
-                    data={olympicData.participation.slice(0, 8)} 
+                    data={olympicData?.participation?.slice(0, 8) || []} 
                     title="Participation des Athlètes par Discipline"
                   />
                 </div>
@@ -325,9 +325,9 @@ export default function Dashboard() {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#FFD100]/10 to-[#009F3D]/10 rounded-3xl blur-2xl" />
                 <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50">
-                  <GenderParityChart 
-                    data={olympicData.genderParity.slice(0, 8)} 
-                    title="Analyse de la Parité des Genres"
+                  <TopCountriesChart 
+                    data={olympicData?.topCountries?.slice(0, 10) || []} 
+                    title="Top Pays par Nombre d'Athlètes"
                   />
                 </div>
               </motion.div>
