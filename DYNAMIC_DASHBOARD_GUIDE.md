@@ -262,7 +262,7 @@ const handleRefresh = async () => {
 export const powerBIConfig = {
   clientId: 'YOUR_CLIENT_ID',
   tenantId: '604f1a96-cbe8-43f8-abbf-f8eaf5d85730',
-  reportId: 'b8b90654-9d77-4a72-8be6-6d1da347696e',
+  reportId: '0adf0086-c7fd-4dcb-b2b7-eeafa31ad5ae',
   workspaceId: 'YOUR_WORKSPACE_ID'
 };
 ```

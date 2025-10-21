@@ -87,7 +87,7 @@ http://localhost:5173/
 ## 🔧 Configuration Actuelle
 
 ### Power BI
-- **Report ID**: `b8b90654-9d77-4a72-8be6-6d1da347696e`
+- **Report ID**: `0adf0086-c7fd-4dcb-b2b7-eeafa31ad5ae`
 - **Tenant ID**: `604f1a96-cbe8-43f8-abbf-f8eaf5d85730`
 - **Auto Auth**: ✅ Activé
 

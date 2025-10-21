@@ -118,10 +118,10 @@ export default function PowerBIEmbed({
 
         {!isLoading && (
           <iframe 
-            title="projetBI18_10" 
+            title="projetBI20_10" 
             width="1140" 
             height="541.25" 
-            src="https://app.powerbi.com/reportEmbed?reportId=b8b90654-9d77-4a72-8be6-6d1da347696e&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730" 
+            src="https://app.powerbi.com/reportEmbed?reportId=0adf0086-c7fd-4dcb-b2b7-eeafa31ad5ae&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730" 
             frameBorder="0" 
             allowFullScreen={true}
             style={{ border: 0, width: '100%', minHeight: '541.25px' }}
